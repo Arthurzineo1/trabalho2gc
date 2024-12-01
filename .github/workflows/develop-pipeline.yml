@@ -15,7 +15,7 @@ jobs:
 
       - name: Verificar variáveis de ambiente
         run: |
-          if [ -z "${{ secrets.SUPABASE_DEVELOP_URL }}" ] || [ -z "${{ secrets.SUPABASE_PASSWORD }}" ] || [ -z "${{ secrets.SUPABASE_USERNAME }}" ]; then
+          if [ -z "${{ secrets.SUPABASE_DEVELOP_URL }}" ] || [ -z "${{ secrets.SUPABASE_PASSWORD_DEV }}" ] || [ -z "${{ secrets.SUPABASE_USERNAME_DEV }}" ]; then
             echo "Erro: Variáveis de ambiente ausentes."
             echo "Certifique-se de configurar SUPABASE_DEVELOP_URL, SUPABASE_PASSWORD e SUPABASE_USERNAME nos Secrets do GitHub."
             exit 1
@@ -29,13 +29,13 @@ jobs:
       - name: Aplicar migrações no Supabase (Develop)
         env:
           SUPABASE_DEVELOP_URL: ${{ secrets.SUPABASE_DEVELOP_URL }}
-          SUPABASE_PASSWORD: ${{ secrets.SUPABASE_PASSWORD }}
-          SUPABASE_USERNAME: ${{ secrets.SUPABASE_USERNAME }}
+          SUPABASE_PASSWORD: ${{ secrets.SUPABASE_PASSWORD_DEV }}
+          SUPABASE_USERNAME: ${{ secrets.SUPABASE_USERNAME_DEV }}
         run: |
           echo "Aplicando migrações no banco de dados Supabase (Develop)..."
           for file in $(ls migrations/*.sql); do
             echo "Executando $file..."
-            PGPASSWORD=${SUPABASE_PASSWORD} psql -h ${SUPABASE_DEVELOP_URL} -p 6543 -U ${SUPABASE_USERNAME} -d "postgres" -f $file
+            PGPASSWORD=${SUPABASE_PASSWORD_DEV} psql -h ${SUPABASE_DEVELOP_URL} -p 6543 -U ${SUPABASE_USERNAME_DEV} -d "postgres" -f $file
           done
 
       - name: Deploy para GitHub Pages (Develop)
