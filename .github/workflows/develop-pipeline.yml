@@ -33,6 +33,9 @@ jobs:
           SUPABASE_USERNAME: ${{ secrets.SUPABASE_USERNAME_DEV }}
         run: |
           echo "Aplicando migrações no banco de dados Supabase (Develop)..."
+          echo ${SUPABASE_PASSWORD_DEV}
+          echo ${SUPABASE_DEVELOP_URL}
+          echo ${SUPABASE_USERNAME_DEV}
           for file in $(ls migrations/*.sql); do
             echo "Executando $file..."
             PGPASSWORD=${SUPABASE_PASSWORD_DEV} psql -h ${SUPABASE_DEVELOP_URL} -p 6543 -U ${SUPABASE_USERNAME_DEV} -d "postgres" -f $file
