@@ -1,0 +1,30 @@
+# .github/workflows/main-pipeline.yml
+name: Main Pipeline
+
+on:
+  schedule:
+    - cron: "0 21 * * *" # Agendado para 21:00 UTC
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v3
+
+      - name: Aplicar migrações no Supabase (Main)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_MAIN_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_MAIN_KEY }}
+        run: |
+          echo "Aplicando migrações no Supabase para Main..."
+          for file in $(ls migrations/*.sql); do
+            psql $SUPABASE_URL -U postgres -f $file
+          done
+
+      - name: Deploy do index.html (Main)
+        run: |
+          echo "Realizando deploy do index.html para o ambiente Main..."
+          # Use Netlify, GitHub Pages, ou outra ferramenta para hospedar o arquivo
+          cp index.html /path/to/main/site
